@@ -7,7 +7,7 @@ import base64
 
 app = Flask(__name__)
 
-# Eğitilmiş modeli yükle
+# Load trained model
 model = tf.keras.models.load_model('digit_classifier.h5')
 
 
