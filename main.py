@@ -22,7 +22,7 @@ class DigitClassification:
 
     def save_model(self):
         self.model.save('digit_classifier.h5')
-        print("Model başarıyla 'digit_classifier.h5' olarak kaydedildi!")
+        print("Model succesfully saved as 'digit_classifier.h5' !")
 
     def predict(self):
         prediction = self.model.predict(self.X_test)
