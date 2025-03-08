@@ -15,14 +15,14 @@
             font-family: Arial, sans-serif;
         }
         h1 {
-            color: black;
+            color: white;
         }
         canvas {
             border: 1px solid black;
             background-color: white;
         }
         .buttons {
-            margin-top: 10px;
+            margin-top: 30px;
         }
         button {
             margin: 5px;
@@ -52,12 +52,10 @@
         let lastX = 0;
         let lastY = 0;
 
-        // Çizim ayarları
-        ctx.lineWidth = 10;
+        ctx.lineWidth = 15;  // Kalem genişliğini artır
         ctx.lineCap = 'round';
-        ctx.strokeStyle = 'black';
+        ctx.strokeStyle = 'white';  // Beyaz çizgi, siyah zemin için
 
-        // Çizim olayları
         canvas.addEventListener('mousedown', startDrawing);
         canvas.addEventListener('mouseup', stopDrawing);
         canvas.addEventListener('mouseout', stopDrawing);
@@ -72,37 +70,45 @@
 
         function stopDrawing() {
             drawing = false;
-            ctx.beginPath(); // Çizim durduğunda yeni bir yol başlat
+            ctx.beginPath();
         }
 
         function draw(event) {
             if (!drawing) return;
-
             const rect = canvas.getBoundingClientRect();
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
-
-            // Çizim mantığı
-            ctx.beginPath(); // Yeni bir çizim yolu başlat
-            ctx.moveTo(lastX, lastY); // Önceki noktadan başla
-            ctx.lineTo(x, y); // Yeni noktaya çizgi çek
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
             ctx.stroke();
-
-            // Son konumu güncelle
             lastX = x;
             lastY = y;
         }
 
         function clearCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'black';  // Siyah zemin
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
             document.getElementById('result').innerText = '';
         }
 
         function predict() {
-            // Canvas'taki görüntüyü base64 formatına çevir
-            const dataURL = canvas.toDataURL('image/png');
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            let isEmpty = true;
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i + 3] !== 0) {
+                    isEmpty = false;
+                    break;
+                }
+            }
+            if (isEmpty) {
+                document.getElementById('result').innerText = 'Lütfen bir rakam çizin!';
+                return;
+            }
 
-            // Flask'a POST isteği gönder
+            const dataURL = canvas.toDataURL('image/png');
             fetch('/predict', {
                 method: 'POST',
                 headers: {
