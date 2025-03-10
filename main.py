@@ -10,7 +10,7 @@ class DigitClassification:
         self.X_train = self.X_train.astype('float32') / 255.0
         self.X_test = self.X_test.astype('float32') / 255.0
         self.model = Sequential([
-            Flatten(input_shape=(28, 28)),
+            Flatten(input_shape=(28, 28, 1)),
             Dense(units=128, activation='relu'),
             Dense(units=64, activation='relu'),
             Dense(units=10, activation='softmax')

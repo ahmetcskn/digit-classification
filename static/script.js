@@ -3,10 +3,12 @@ const ctx = canvas.getContext('2d');
 let drawing = false;
 let lastX = 0;
 let lastY = 0;
+let currentDigit = 0;
+const doneButton = document.getElementById('doneButton');
 
-ctx.lineWidth = 15;  // Kalem genişliğini artır
+ctx.lineWidth = 10;
 ctx.lineCap = 'round';
-ctx.strokeStyle = 'white';  // Beyaz çizgi, siyah zemin için
+ctx.strokeStyle = 'white';
 
 canvas.addEventListener('mousedown', startDrawing);
 canvas.addEventListener('mouseup', stopDrawing);
@@ -39,10 +41,44 @@ function draw(event) {
 }
 
 function clearCanvas() {
-  ctx.fillStyle = 'black';  // Siyah zemin
+  ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.beginPath();
   document.getElementById('result').innerText = '';
+  doneButton.style.display = 'none';
+}
+
+function trainModel() {
+  if (currentDigit > 9) {
+    document.getElementById('result').innerText = 'Training completed!';
+    doneButton.style.display = 'none';
+    return;
+  }
+  clearCanvas();
+  document.getElementById('result').innerText = `Draw digit ${currentDigit}. Press Done when ready.`;
+  doneButton.style.display = 'block';
+}
+
+function nextDigit() {
+  if (currentDigit <= 9) {
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const dataURL = canvas.toDataURL('image/png');
+    fetch('/train', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `image=${encodeURIComponent(dataURL)}&digit=${currentDigit}`
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Training data sent:', data);
+      })
+      .catch(error => console.error('Hata:', error));
+
+    currentDigit++;
+    trainModel();
+  }
 }
 
 function predict() {

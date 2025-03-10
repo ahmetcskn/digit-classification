@@ -18,7 +18,7 @@
             color: #0FC2C0;
         }
         canvas {
-            border: 1px solid #023535;
+            border: 1px solid #0FC2C0;
             background-color: black;
         }
         .buttons {
@@ -35,6 +35,10 @@
             color: #0FC2C0;
             font-size: 24px;
         }
+        #doneButton {
+            display: none; /* Başta gizli */
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -43,9 +47,10 @@
     <div class="buttons">
         <button onclick="clearCanvas()">Clear</button>
         <button onclick="predict()">Predict</button>
+        <button onclick="trainModel()">Train</button>
     </div>
     <div id="result"></div>
-
+    <button id="doneButton" onclick="nextDigit()">Done</button>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
