@@ -23,21 +23,30 @@
         }
         .buttons {
             margin-top: 30px;
+            display: flex;
+            gap: 10px;
         }
         button {
             margin: 5px;
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #cccccc;
+            background-color: #0FC2C0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0DA7A5;
+        }
+        #doneButton {
+            display: none; /* Başta gizli */
         }
         #result {
             margin-top: 10px;
             color: #0FC2C0;
             font-size: 24px;
-        }
-        #doneButton {
-            display: none; /* Başta gizli */
-            margin-top: 10px;
         }
     </style>
 </head>
@@ -47,10 +56,50 @@
     <div class="buttons">
         <button onclick="clearCanvas()">Clear</button>
         <button onclick="predict()">Predict</button>
-        <button onclick="trainModel()">Train</button>
+        <form action="/train" method="get" style="display: inline;">
+            <button type="submit">Train</button>
+        </form>
+        <form action="/train" method="post" id="trainForm" style="display: inline;">
+            <input type="hidden" name="image" id="imageData">
+            <input type="hidden" name="digit" id="currentDigit" value="{{ current_digit }}">
+            <button type="submit" id="doneButton" onclick="saveImage()">Done</button>
+        </form>
     </div>
-    <div id="result"></div>
-    <button id="doneButton" onclick="nextDigit()">Done</button>
+    <div id="result">{{ message if message else '' }}</div>
+
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        function saveImage() {
+            const canvas = document.getElementById('canvas');
+            const dataURL = canvas.toDataURL('image/png');
+            console.log("Saving image, DataURL length:", dataURL.length);
+            document.getElementById('imageData').value = dataURL;
+        }
+
+        // "Done" butonunu sadece Train modunda göster
+        window.addEventListener('load', () => {
+            const doneButton = document.getElementById('doneButton');
+            const currentDigitInput = document.getElementById('currentDigit');
+            const trainForm = document.getElementById('trainForm');
+            const trainButton = document.querySelector('form[action="/train"][method="get"] button');
+
+            function updateButtonVisibility() {
+                const digit = parseInt(currentDigitInput.value);
+                if (digit >= 0 && digit <= 9) {
+                    doneButton.style.display = 'inline';
+                    trainForm.style.display = 'inline';
+                    trainButton.style.display = 'none'; // Train butonunu gizle
+                } else {
+                    doneButton.style.display = 'none';
+                    trainForm.style.display = 'none';
+                    trainButton.style.display = 'inline'; // Train butonunu göster
+                }
+            }
+
+            updateButtonVisibility();
+            // Sayfada değişim olduğunda kontrol et
+            setInterval(updateButtonVisibility, 500);
+        });
+    </script>
 </body>
 </html>

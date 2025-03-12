@@ -35,5 +35,5 @@ if __name__ == "__main__":
     digit_classifier.train()
     digit_classifier.save_model()
     predictions = digit_classifier.predict()
-    print("Tahmin edilen ilk 10 rakam:", predictions[:10])
-    print("Gerçek ilk 10 etiket:      ", digit_classifier.y_test[:10])
+    print("Predicted first 10 numbers.:", predictions[:10])
+    print("Actual first 10 numbers:      ", digit_classifier.y_test[:10])
