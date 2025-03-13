@@ -130,9 +130,9 @@ def train():
             image = Image.open(io.BytesIO(image_data)).convert('L')
             image = image.resize((28, 28))
             image_array = np.array(image).astype('float32') / 255.0
-            image_array = image_array.reshape(28, 28)  # 4D’den 2D’ye düzeltildi
+            image_array = image_array.reshape(28, 28)
 
-            is_valid, validation_message = validate_image(image_array.reshape(1, 28, 28))  # Doğrulama için 3D
+            is_valid, validation_message = validate_image(image_array.reshape(1, 28, 28))
             if not is_valid:
                 log_training(f"Validation failed for digit {digit}: {validation_message}")
                 message = validation_message
@@ -151,7 +151,7 @@ def train():
                 if training_data:
                     X_train = np.array([item[0] for item in training_data])
                     y_train = np.array([item[1] for item in training_data])
-                    X_train = X_train.reshape(X_train.shape[0], 28, 28)  # Model için 3D
+                    X_train = X_train.reshape(X_train.shape[0], 28, 28)
                     history = model.fit(X_train, y_train, epochs=5, verbose=1)
                     model.save('digit_classifier.h5')
                     plot_training_results(history)
