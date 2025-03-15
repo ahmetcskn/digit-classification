@@ -30,8 +30,8 @@
             margin: 5px;
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #0FC2C0;
-            color: white;
+            background-color: #cccccc;
+            color: black;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -41,7 +41,7 @@
             background-color: #0DA7A5;
         }
         #doneButton {
-            display: none; /* Başta gizli */
+            display: none;
         }
         #result {
             margin-top: 10px;
@@ -76,7 +76,6 @@
             document.getElementById('imageData').value = dataURL;
         }
 
-        // "Done" butonunu sadece Train modunda göster
         window.addEventListener('load', () => {
             const doneButton = document.getElementById('doneButton');
             const currentDigitInput = document.getElementById('currentDigit');
@@ -88,16 +87,15 @@
                 if (digit >= 0 && digit <= 9) {
                     doneButton.style.display = 'inline';
                     trainForm.style.display = 'inline';
-                    trainButton.style.display = 'none'; // Train butonunu gizle
+                    trainButton.style.display = 'none';
                 } else {
                     doneButton.style.display = 'none';
                     trainForm.style.display = 'none';
-                    trainButton.style.display = 'inline'; // Train butonunu göster
+                    trainButton.style.display = 'inline';
                 }
             }
 
             updateButtonVisibility();
-            // Sayfada değişim olduğunda kontrol et
             setInterval(updateButtonVisibility, 500);
         });
     </script>
